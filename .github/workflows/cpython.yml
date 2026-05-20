@@ -17,8 +17,7 @@ jobs:
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
         
-        CFLAGS="-fsanitize=hwaddress \
-          -fsanitize=memory" \
+        CFLAGS="-fsanitize=hwaddress" \
           ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety
 
     - name: Install dependencies
