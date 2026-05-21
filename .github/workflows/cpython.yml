@@ -17,6 +17,8 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       MACOSX_DEPLOYMENT_TARGET: 10.15
+      LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
+      CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
 
     steps:
     - uses: actions/checkout@v6
@@ -27,7 +29,7 @@ jobs:
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
-        which -a clang
+        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 
     - name: System info
       run: |
