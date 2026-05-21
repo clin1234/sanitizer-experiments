@@ -11,7 +11,8 @@ jobs:
     runs-on: macos-26
     env:
       CC: 'clang'
-      CFLAGS: '-fsanitize=memtag-stack -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag'
+      # -fsanitize=memtag-stack -march=armv8a+memtag only with M5 CPU
+      CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
       HOMEBREW_NO_ANALYTICS: 1
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
