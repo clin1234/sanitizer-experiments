@@ -30,6 +30,7 @@ jobs:
             --enable-safety
             --config-cache
             --with-lto=yes
+            --disable-ipv6
 
     - name: Upload config.log
       if: failure()
