@@ -10,7 +10,6 @@ jobs:
   build-macos:
     runs-on: macos-26
     env:
-      CC: 'clang'
       # -fsanitize=memtag-stack -march=armv8a+memtag only with M5 CPU
       CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
       HOMEBREW_NO_ANALYTICS: 1
@@ -24,24 +23,28 @@ jobs:
       with:
         repository: "python/cpython"
 
-    - name: System info
-      run: |
-        $CC --version
-        system_profiler SPHardwareDataType
-
     - name: Install Homebrew dependencies
       run: |
         brew bundle --file=Misc/Brewfile
-        brew install make
+        brew install make llvm
+
+    - name: System info
+      run: |
+        env
+        $CC --version
+        system_profiler SPHardwareDataType
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
           ./configure \
             --with-undefined-behavior-sanitizer \
+            --with-pydebug \
             --disable-gil \
             --enable-safety \
+            --enable-slower-safety \
             --with-lto=yes \
             --config-cache \
+            --prefix=/opt/python-dev \
             --disable-ipv6
 
     - name: Upload config.log
@@ -52,7 +55,7 @@ jobs:
         path: 'config.log'
   
     - name: Make
-      run: gmake -j8
+      run: gmake -j
 
     - name: Display build info
       run: gmake pythoninfo
