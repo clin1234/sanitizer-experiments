@@ -38,6 +38,7 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
+        PATH="/opt/homebrew/opt/llvm/bin:$PATH"
         CC=clang-22 \
         LDFLAGS="-L/opt/homebrew/opt/llvm/lib" \
         CPPFLAGS="-I/opt/homebrew/opt/llvm/include" \
