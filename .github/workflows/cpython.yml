@@ -19,6 +19,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.15
       LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
       CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
+      CC: 'clang-22'
 
     steps:
     - uses: actions/checkout@v6
@@ -31,10 +32,11 @@ jobs:
         brew install make llvm
         export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
         ls /opt/homebrew/opt/llvm/bin
+        env
 
     - name: System info
       run: |
-        clang --version
+        $CC --version
         system_profiler SPHardwareDataType
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
