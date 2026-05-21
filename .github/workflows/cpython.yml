@@ -16,6 +16,7 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      PYTHONSTRICTEXTENSIONBUILD: 1
       MACOSX_DEPLOYMENT_TARGET: 10.15
       LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
       CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
@@ -37,11 +38,13 @@ jobs:
 
     - name: System info
       run: |
-        /opt/homebrew/opt/llvm/bin/clang-22 --version
+        $CC --version
         system_profiler SPHardwareDataType
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
+        GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" \
+        GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" \
           ./configure \
             --with-undefined-behavior-sanitizer \
             --with-pydebug \
@@ -51,7 +54,8 @@ jobs:
             --with-lto=yes \
             --config-cache \
             --prefix=/opt/python-dev \
-            --disable-ipv6
+            --disable-ipv6 \
+            --with-openssl="$(brew --prefix openssl@3.5)"
 
     - name: Upload config.log
       if: failure()
