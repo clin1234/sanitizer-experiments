@@ -23,6 +23,11 @@ jobs:
       with:
         repository: "python/cpython"
 
+    - name: System info
+      run: |
+        $(CC) --version
+        system_profiler SPHardwareDataType
+
     - name: Install Homebrew dependencies
       run: |
         brew bundle --file=Misc/Brewfile
