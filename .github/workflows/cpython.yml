@@ -17,9 +17,6 @@ jobs:
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       MACOSX_DEPLOYMENT_TARGET: 10.15
-      LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
-      CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
-      CC: 'clang-22'
 
     steps:
     - uses: actions/checkout@v6
@@ -30,9 +27,9 @@ jobs:
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
-        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-        ls /opt/homebrew/opt/llvm/bin
-        env
+#        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+#        ls /opt/homebrew/opt/llvm/bin
+#        env
 
     - name: System info
       run: |
@@ -41,6 +38,9 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
+        CC=clang-22 \
+        LDFLAGS="-L/opt/homebrew/opt/llvm/lib" \
+        CPPFLAGS="-I/opt/homebrew/opt/llvm/include" \
           ./configure \
             --with-undefined-behavior-sanitizer \
             --with-pydebug \
