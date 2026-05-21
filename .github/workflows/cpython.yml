@@ -54,7 +54,6 @@ jobs:
             --with-lto=yes \
             --config-cache \
             --prefix=/opt/python-dev \
-            --disable-ipv6 \
             --with-openssl="$(brew --prefix openssl@3.5)"
 
     - name: Upload config.log
