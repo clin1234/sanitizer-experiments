@@ -11,13 +11,21 @@ jobs:
     runs-on: macos-latest
     env:
       CC: 'clang'
-      CFLAGS: |
-        -fsanitize=memtag-stack -fsanitize=undefined -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag
+      CFLAGS: '-fsanitize=memtag-stack -fsanitize=undefined -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag'
+      HOMEBREW_NO_ANALYTICS: 1
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
 
     steps:
     - uses: actions/checkout@v6
       with:
         repository: "python/cpython"
+
+    - name: Install Homebrew dependencies
+      run: |
+        brew bundle --file=Misc/Brewfile
+        brew install make
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
@@ -26,6 +34,7 @@ jobs:
             --disable-gil \
             --enable-safety \
             --with-lto=yes \
+            --config-cache \
             --disable-ipv6
 
     - name: Upload config.log
@@ -39,8 +48,8 @@ jobs:
       run: gmake -j8
 
     - name: Display build info
-      run: make pythoninfo
+      run: gmake pythoninfo
 
     - name: Tests
-      run: make ci
+      run: gmake ci
           
