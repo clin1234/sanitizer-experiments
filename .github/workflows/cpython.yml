@@ -27,10 +27,12 @@ jobs:
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
+        echo 'Exporting CC...'
         export CC=clang
 
     - name: System info
       run: |
+        echo 'C Compiler: $CC'
         $CC --version
         system_profiler SPHardwareDataType
 
