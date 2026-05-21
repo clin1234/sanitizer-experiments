@@ -25,7 +25,7 @@ jobs:
 
     - name: System info
       run: |
-        $(CC) --version
+        $CC --version
         system_profiler SPHardwareDataType
 
     - name: Install Homebrew dependencies
