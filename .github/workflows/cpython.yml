@@ -36,7 +36,7 @@ jobs:
         path: 'config.log'
   
     - name: Make
-      run: make -j
+      run: make -j8
 
     - name: Display build info
       run: make pythoninfo
