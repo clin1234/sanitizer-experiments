@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-macos:
-    runs-on: macos-latest
+    runs-on: macos-26
     env:
       CC: 'clang'
       CFLAGS: '-fsanitize=memtag-stack -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag'
