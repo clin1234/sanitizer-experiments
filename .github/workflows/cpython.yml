@@ -24,7 +24,7 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-          ./configure \
+          ./configure
             --with-undefined-behavior-sanitizer
             --disable-gil
             --enable-safety
