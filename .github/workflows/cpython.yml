@@ -24,10 +24,8 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-          ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety --config-cache
-          if [[$? -ne 0]]; then
-            cat config.log
-          fi
+          ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety --config-cache;
+          cat config.log
   
     - name: Make
       run: make -j8 --output-sync
