@@ -28,7 +28,6 @@ jobs:
             --with-undefined-behavior-sanitizer
             --disable-gil
             --enable-safety
-            --config-cache
             --with-lto=yes
             --disable-ipv6
 
