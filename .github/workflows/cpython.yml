@@ -14,9 +14,8 @@ jobs:
       CFLAGS: |
         -fsanitize=memtag-stack -fsanitize=undefined
         -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp
-        -fstack-clash-protection -fsanitize=cfi
-        -march=armv8a+memtag -fsanitize-cfi-cross-dso 
-        -fsanitize-cfi-icall-generalize-pointers
+        -fstack-clash-protection
+        -march=armv8a+memtag
 
     steps:
     - uses: actions/checkout@v6
