@@ -30,6 +30,7 @@ jobs:
         brew bundle --file=Misc/Brewfile
         brew install make llvm
         export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+        ls /opt/homebrew/opt/llvm/bin
 
     - name: System info
       run: |
