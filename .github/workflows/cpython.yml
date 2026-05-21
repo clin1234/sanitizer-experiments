@@ -10,12 +10,14 @@ jobs:
   build-macos:
     runs-on: macos-latest
     env:
+      CC: 'clang'
       CFLAGS: |
-        "-fsanitize=hwaddress -fsanitize=memtag-stack -fsanitized=undefined \
-        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp \
-        -fharden-compares -fharden-conditional-branches -fharden-control-flow-redundancy \
-        -fhardcfr-check-returning-calls -fstack-check -fstack-clash-protection \
-        -fsanitize=leak"
+        -fsanitize=hwaddress -fsanitize=memtag-stack -fsanitize=undefined
+        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp
+        -fstack-check -fstack-clash-protection -fsanitize=safe-stack
+        -fsanitize=alloc-token -fsanitize=dataflow -fsanitize=memory
+        -march=armv8a+memtag -fsanitize-cfi-cross-dso 
+        -fsanitize-cfi-icall-generalize-pointers
 
     steps:
     - uses: actions/checkout@v6
@@ -24,7 +26,12 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-          ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety --config-cache;
+          ./configure \
+            --with-undefined-behavior-sanitizer
+            --disable-gil
+            --enable-safety
+            --config-cache
+            --with-lto=yes
 
     - name: Upload config.log
       if: failure()
