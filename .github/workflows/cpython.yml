@@ -27,6 +27,7 @@ jobs:
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
+        export CC=clang
 
     - name: System info
       run: |
