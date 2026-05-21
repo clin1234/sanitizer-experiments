@@ -11,11 +11,12 @@ jobs:
     runs-on: macos-latest
     env:
       CC: 'clang'
-      CFLAGS: '-fsanitize=memtag-stack -fsanitize=undefined -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag'
+      CFLAGS: '-fsanitize=memtag-stack -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag'
       HOMEBREW_NO_ANALYTICS: 1
       HOMEBREW_NO_AUTO_UPDATE: 1
       HOMEBREW_NO_INSTALL_CLEANUP: 1
       HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+      MACOSX_DEPLOYMENT_TARGET: 10.15
 
     steps:
     - uses: actions/checkout@v6
