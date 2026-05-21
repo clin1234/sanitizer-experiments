@@ -12,10 +12,7 @@ jobs:
     env:
       CC: 'clang'
       CFLAGS: |
-        -fsanitize=memtag-stack -fsanitize=undefined \
-        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp \
-        -fstack-clash-protection \
-        -march=armv8a+memtag
+        -fsanitize=memtag-stack -fsanitize=undefined -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection -march=armv8a+memtag
 
     steps:
     - uses: actions/checkout@v6
