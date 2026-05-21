@@ -36,7 +36,7 @@ jobs:
 
     - name: System info
       run: |
-        $CC --version
+        /opt/homebrew/opt/llvm/bin/clang-22 --version
         system_profiler SPHardwareDataType
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
