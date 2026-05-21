@@ -4,10 +4,18 @@ on:
   schedule:
     - cron: "0 2 */2 * *"
   workflow_dispatch:
+  push:
 
 jobs:
-  build:
+  build-macos:
     runs-on: macos-latest
+    env:
+      CFLAGS: |
+        "-fsanitize=hwaddress -fsanitize=memtag-stack -fsanitized=undefined \
+        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp \
+        -fharden-compares -fharden-conditional-branches -fharden-control-flow-redundancy \
+        -fhardcfr-check-returning-calls -fstack-check -fstack-clash-protection \
+        -fsanitize=leak"
 
     steps:
     - uses: actions/checkout@v6
@@ -16,14 +24,15 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-          ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety
+          ./configure --with-undefined-behavior-sanitizer --disable-gil --enable-safety --config-cache \
+          
 
-    - name: Install dependencies
-      run: make -j4
+    - name: Make
+      run: make -j8 --output-sync
 
-    - name: Run check
-      run: make check
+    - name: Display build info
+      run: make pythoninfo
 
-    - name: Run distcheck
-      run: make distcheck
+    - name: Tests
+      run: make ci
           
