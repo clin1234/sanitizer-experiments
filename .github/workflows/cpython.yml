@@ -12,9 +12,9 @@ jobs:
     env:
       CC: 'clang'
       CFLAGS: |
-        -fsanitize=memtag-stack -fsanitize=undefined
-        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp
-        -fstack-clash-protection
+        -fsanitize=memtag-stack -fsanitize=undefined \
+        -fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp \
+        -fstack-clash-protection \
         -march=armv8a+memtag
 
     steps:
@@ -24,11 +24,11 @@ jobs:
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-          ./configure
-            --with-undefined-behavior-sanitizer
-            --disable-gil
-            --enable-safety
-            --with-lto=yes
+          ./configure \
+            --with-undefined-behavior-sanitizer \
+            --disable-gil \
+            --enable-safety \
+            --with-lto=yes \
             --disable-ipv6
 
     - name: Upload config.log
