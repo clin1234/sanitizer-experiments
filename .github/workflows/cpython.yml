@@ -31,7 +31,6 @@ jobs:
 
     - name: System info
       run: |
-        env
         $CC --version
         system_profiler SPHardwareDataType
 
