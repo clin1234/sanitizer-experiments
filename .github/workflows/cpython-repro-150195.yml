@@ -39,7 +39,7 @@ jobs:
 #        $CC --version
 #        system_profiler SPHardwareDataType
 
-    - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
+    - name: Configure no-GIL with UBSan, pydebug, enable-safety(?)
       run: |
         GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" \
         GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" \
@@ -47,7 +47,6 @@ jobs:
             --with-undefined-behavior-sanitizer \
             --with-pydebug \
             --disable-gil \
-            --enable-safety \
             --prefix=/opt/python-dev \
             --with-openssl="$(brew --prefix openssl@3.5)"
 
