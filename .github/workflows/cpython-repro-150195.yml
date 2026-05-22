@@ -2,6 +2,7 @@ name: Reproduce python/cpython#150195
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   build-macos:
