@@ -44,6 +44,8 @@ jobs:
 
     - name: Configure no-GIL with TSan
       run: |
+        GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" \
+        GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" \
           ./configure \
             --with-thread-sanitizer \
             --disable-gil \
