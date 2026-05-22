@@ -26,8 +26,8 @@ jobs:
       with:
         repository: "python/cpython"
 
-    - name: Change recursion limit to 300,000
-      run: sed -i 's/150_000/300_000/g' Lib/test/support/__init__.py 
+    - name: Change recursion
+      run: sed -i 's/150_000/300_000/g' 'Lib/test/support/__init__.py'
 
     - name: Install Homebrew dependencies
       run: |
