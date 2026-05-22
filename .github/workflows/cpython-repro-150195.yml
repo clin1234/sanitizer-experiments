@@ -47,9 +47,6 @@ jobs:
             --with-pydebug \
             --disable-gil \
             --enable-safety \
-            # --enable-slower-safety \
-            # --with-lto=yes \
-            # --config-cache \
             --prefix=/opt/python-dev \
             --with-openssl="$(brew --prefix openssl@3.5)"
 
