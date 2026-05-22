@@ -49,6 +49,7 @@ jobs:
           ./configure \
             --with-thread-sanitizer \
             --disable-gil \
+            --with-pydebug \
             --prefix=/opt/python-dev \
 
     - name: Upload config.log
