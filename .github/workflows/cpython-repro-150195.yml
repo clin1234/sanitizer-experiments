@@ -43,12 +43,13 @@ jobs:
 #        $CC --version
 #        system_profiler SPHardwareDataType
 
-    - name: Configure no-GIL with UBSan, pydebug, enable-safety(?)
+    - name: Configure no-GIL with UBSan, pydebug, enable-safety(?), TSan
       run: |
         GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" \
         GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" \
           ./configure \
             --with-undefined-behavior-sanitizer \
+            --with-thread-sanitizer \
             --with-pydebug \
             --disable-gil \
             --prefix=/opt/python-dev \
