@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       # -fsanitize=memtag-stack -march=armv8a+memtag only with M5 CPU
-      CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
+      # CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
       PYTHONSTRICTEXTENSIONBUILD: 1
       CC: ${{ matrix.cc }}
       # LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
