@@ -52,6 +52,7 @@ jobs:
           ./configure \
              ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)' || '' }} \
             --with-undefined-behavior-sanitizer \
+            --enable-shared \
             --with-thread-sanitizer \
             --with-pydebug \
             --disable-gil \
