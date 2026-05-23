@@ -25,32 +25,25 @@ jobs:
       with:
         repository: "python/cpython"
 
-    - name: Install Homebrew dependencies
-      if: ${{ contains(matrix.os, 'macos') }}
-      run: |
-        brew bundle --file=Misc/Brewfile
-        brew install make llvm
-        echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> "$GITHUB_ENV"
-        alias make=gmake
-#        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
-#        ls /opt/homebrew/opt/llvm/bin
-#        env
-
 #    - name: System info
 #      run: |
 #        $CC --version
 #        system_profiler SPHardwareDataType
 
-    - name: Export macOS-specific ENVs
+    - name: macOS-specific setup
       if:  ${{ contains(matrix.os, 'macos') }}
       run: |
-         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
-         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
+        brew bundle --file=Misc/Brewfile
+        brew install make llvm
+        echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> "$GITHUB_ENV"
+        alias make=gmake
+        echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
+        echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
 
-    - name: Export Ubuntu-specific ENVs on LLVM
+    - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
       run: |
-        ls -l  /usr/bin/llvm-ar
+        apt install llvm
         echo AR=llvm-ar >> "$GITHUB_ENV"
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
