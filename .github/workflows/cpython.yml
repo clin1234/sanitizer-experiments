@@ -43,7 +43,7 @@ jobs:
     - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
       run: |
-        apt install llvm
+        sudo apt install llvm
         echo AR=llvm-ar >> "$GITHUB_ENV"
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
