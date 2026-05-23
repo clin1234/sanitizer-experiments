@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         cc: [clang, gcc]
-        os: [ubuntu-latest, macos-26, macos-26-intel]
+        os: [ubuntu-latest, macos-26, macos-26-intel, ubuntu-latest-arm]
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     env:
@@ -50,13 +50,16 @@ jobs:
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
           ./configure \
+             ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)' || '' }} \
             --with-undefined-behavior-sanitizer \
+            --with-thread-sanitizer \
             --with-pydebug \
             --disable-gil \
             --enable-safety \
             --enable-slower-safety \
             --with-lto=yes \
-            --config-cache
+            --config-cache \
+            --with-strict-overflow
 
     - name: Upload config.log
       if: failure()
@@ -74,5 +77,18 @@ jobs:
 
     - name: Tests
       if: success() || failure()
-      run: make ci
-          
+      run: |
+        ./python -m test -x test_capi -x test_faulthandler
+        ./python -m test --tsan-parallel --parallel-threads=6 -j6
+        make ci
+
+    - name: Display logs
+      if: always()
+      run: find "${GITHUB_WORKSPACE}" -name 'san_log.*' | xargs head -n 1000
+
+    - name: Upload San logs
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        path: san_log.*
+        if-no-files-found: ignore
