@@ -41,6 +41,34 @@ jobs:
         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
 
+    - name: Ubuntu-specific setup
+      if:  ${{ contains(matrix.os, 'ubuntu') }}
+      run: |
+        sudo apt install libb2-dev \
+          libbz2-dev \
+          libffi-dev \
+          libgdbm-dev \
+          libgdbm-compat-dev \
+          liblzma-dev \
+          libncurses5-dev \
+          libreadline6-dev \
+          libsqlite3-dev \
+          libssl-dev \
+          libzstd-dev \
+          lzma-dev \
+          strace \
+          tk-dev \
+          uuid-dev \
+          zlib1g-dev
+        MPDECIMAL_VERSION=4.0.1
+        curl -fsSL "https://www.bytereef.org/software/mpdecimal/releases/mpdecimal-${MPDECIMAL_VERSION}.tar.gz" \
+            | tar -xz -C /tmp
+        (cd "/tmp/mpdecimal-${MPDECIMAL_VERSION}" \
+            && ./configure --prefix=/usr/local \
+            && make -j \
+            && sudo make install)
+        ldconfig
+
     - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
       run: |
@@ -50,7 +78,7 @@ jobs:
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
           ./configure \
-             ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)' || '' }} \
+             ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)"' || '' }} \
             --with-undefined-behavior-sanitizer \
             --enable-shared \
             --with-thread-sanitizer \
