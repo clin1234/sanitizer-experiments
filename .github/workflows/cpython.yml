@@ -1,4 +1,4 @@
-name: My custom CI
+name: Main Python with Sans
 
 on:
   schedule:
@@ -6,20 +6,19 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-macos:
-    runs-on: macos-26
+  build:
+    strategy:
+      matrix:
+        cc: [clang, gcc]
+        os: [ubuntu-latest, windows-latest, macos-26, macos26-intel]
+    runs-on: ${{ matrix.os }}
     env:
       # -fsanitize=memtag-stack -march=armv8a+memtag only with M5 CPU
       CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
-      HOMEBREW_NO_ANALYTICS: 1
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
-      HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
       PYTHONSTRICTEXTENSIONBUILD: 1
-      MACOSX_DEPLOYMENT_TARGET: 10.15
-      LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
-      CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
-      CC: 'clang-22'
+      CC: ${{ matrix.cc }}
+      # LDFLAGS: "-L/opt/homebrew/opt/llvm/lib"
+      # CPPFLAGS: "-I/opt/homebrew/opt/llvm/include"
 
     steps:
     - uses: actions/checkout@v6
@@ -27,23 +26,29 @@ jobs:
         repository: "python/cpython"
 
     - name: Install Homebrew dependencies
+      if: ${{ contains(matrix.os, 'macos') }}
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
         echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> "$GITHUB_ENV"
+        alias make=gmake
 #        export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 #        ls /opt/homebrew/opt/llvm/bin
 #        env
 
-    - name: System info
+#    - name: System info
+#      run: |
+#        $CC --version
+#        system_profiler SPHardwareDataType
+
+    - name: Export macOS-specific ENVs
+      if:  ${{ contains(matrix.os, 'macos') }}
       run: |
-        $CC --version
-        system_profiler SPHardwareDataType
+         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
+         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
-        GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" \
-        GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" \
           ./configure \
             --with-undefined-behavior-sanitizer \
             --with-pydebug \
@@ -51,9 +56,7 @@ jobs:
             --enable-safety \
             --enable-slower-safety \
             --with-lto=yes \
-            --config-cache \
-            --prefix=/opt/python-dev \
-            --with-openssl="$(brew --prefix openssl@3.5)"
+            --config-cache
 
     - name: Upload config.log
       if: failure()
@@ -63,11 +66,11 @@ jobs:
         path: 'config.log'
   
     - name: Make
-      run: gmake -j
+      run: make -j
 
     - name: Display build info
-      run: gmake pythoninfo
+      run: make pythoninfo
 
     - name: Tests
-      run: gmake ci
+      run: make ci
           
