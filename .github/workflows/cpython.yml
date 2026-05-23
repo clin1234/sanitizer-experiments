@@ -47,6 +47,11 @@ jobs:
          echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
          echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
 
+    - name: Export Ubuntu-specific ENVs on LLVM
+      if:  ${{ contains(matrix.os, 'macos') && matrix.cc == 'clang'}}
+      run: |
+         echo AR=llvm-ar >> "$GITHUB_ENV"
+
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
           ./configure \
