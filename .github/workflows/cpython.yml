@@ -42,6 +42,10 @@ jobs:
         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
 
+    - name: apt update on arm64
+      if: ${{ matrix.os == 'ubuntu-24.04-arm' }}
+      run: sudo apt update
+
     - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
       run: |
