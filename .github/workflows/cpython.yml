@@ -50,7 +50,8 @@ jobs:
     - name: Export Ubuntu-specific ENVs on LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
       run: |
-         echo AR=llvm-ar >> "$GITHUB_ENV"
+        ls -l  /usr/bin/llvm-ar
+        echo AR=llvm-ar >> "$GITHUB_ENV"
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
