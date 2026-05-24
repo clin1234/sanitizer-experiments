@@ -41,6 +41,7 @@ jobs:
         alias make=gmake
         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
+        echo TESTPYTHON=python.exe >> "$GITHUB_ENV"
 
     - name: apt update on arm64
       if: ${{ matrix.os == 'ubuntu-24.04-arm' }}
@@ -52,6 +53,7 @@ jobs:
         sudo apt install llvm
         echo CXX=clang++ >> "$GITHUB_ENV"
         echo AR=llvm-ar >> "$GITHUB_ENV"
+        echo TESTPYTHON=python >> "$GITHUB_ENV"
 
     - name: Ubuntu-specific setup
       if:  ${{ contains(matrix.os, 'ubuntu') }}
@@ -86,7 +88,6 @@ jobs:
           ./configure \
              ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)"' || '' }} \
             --with-undefined-behavior-sanitizer \
-          #  --enable-shared \
             --with-thread-sanitizer \
             --with-pydebug \
             --disable-gil \
@@ -102,20 +103,17 @@ jobs:
       with:
         name: config-log
         path: 'config.log'
-  
-    - name: Make
-      run: make -j
 
-    - name: Display build info
+    - name: Build then display build info
       if: success() || failure()
-      run: make pythoninfo
+      run: make -j pythoninfo
 
     - name: Tests
       if: success() || failure()
       run: |
-        # ./python -m test -x test_capi -x test_faulthandler
-        # ./python -m test --tsan-parallel --parallel-threads=6 -j6
-        make ci
+        ./$TESTPYTHON -m test -x test_capi -x test_faulthandler
+        ./$TESTPYTHON -m test --tsan-parallel --parallel-threads=6 -j6
+        make -j ci
 
     - name: Display logs
       if: always()
