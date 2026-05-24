@@ -35,7 +35,7 @@ jobs:
       run: |
         brew bundle --file=Misc/Brewfile
         brew install make llvm
-        echo "PATH=/opt/homebrew/opt/llvm/bin:$PATH" >> "$GITHUB_ENV"
+        echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH"
         echo LDFLAGS="-L/opt/homebrew/opt/llvm/lib" >> "$GITHUB_ENV"
         echo CPPFLAGS="-I/opt/homebrew/opt/llvm/include" >> "$GITHUB_ENV"
         alias make=gmake
@@ -46,6 +46,15 @@ jobs:
     - name: apt update on arm64
       if: ${{ matrix.os == 'ubuntu-24.04-arm' }}
       run: sudo apt update
+
+    - name: Ubuntu-specific setup with GCC on x64
+      if:  ${{ matrix.os == 'ubuntu-latest' && matrix.cc == 'gcc'}}
+      run: |
+        wget --quiet https://kayari.org/gcc-latest/gcc-latest.deb \
+              && sudo dpkg -i gcc-latest.deb
+        echo "/opt/gcc-latest/bin" >> $GITHUB_PATH
+        echo "LD_RUN_PATH=/opt/gcc-latest/lib64" >> $GITHUB_ENV
+        echo CXX=g++ >> "$GITHUB_ENV"
 
     - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
@@ -83,7 +92,12 @@ jobs:
         sudo ldconfig
         echo TESTPYTHON=python >> "$GITHUB_ENV"
 
-    - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
+    - name: Compiler info
+      run: |
+        $CC --version
+        $CXX --version
+
+    - name: Configure
       run: |
           ./configure \
              ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)"' || '' }} \
