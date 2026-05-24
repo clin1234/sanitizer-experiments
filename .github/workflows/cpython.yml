@@ -53,7 +53,6 @@ jobs:
         sudo apt install llvm
         echo CXX=clang++ >> "$GITHUB_ENV"
         echo AR=llvm-ar >> "$GITHUB_ENV"
-        echo TESTPYTHON=python >> "$GITHUB_ENV"
 
     - name: Ubuntu-specific setup
       if:  ${{ contains(matrix.os, 'ubuntu') }}
@@ -82,6 +81,7 @@ jobs:
             && make -j \
             && sudo make install)
         sudo ldconfig
+        echo TESTPYTHON=python >> "$GITHUB_ENV"
 
     - name: Configure no-GIL with HWAddress, memtag-stack, LSan, UBSan, Type Sanitizer, MSan
       run: |
