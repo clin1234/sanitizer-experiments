@@ -26,7 +26,6 @@ jobs:
         run: |
           $CC --version
           env
-          ls -la "$(brew --prefix gcc@15)/current/"
 
       - name: Build
         run: |
