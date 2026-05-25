@@ -35,6 +35,7 @@ jobs:
       run: |
         echo CC=gcc-15 >> "$GITHUB_ENV"
         echo CXX=g++-15 >> "$GITHUB_ENV"
+        echo TESTPYTHON=python.exe >> "$GITHUB_ENV"
 
     - name: macOS-specific setup with LLVM
       if: ${{ contains(matrix.os, 'macos') && matrix.cc == 'clang'}}
@@ -47,8 +48,8 @@ jobs:
         alias make=gmake
         echo GDBM_CFLAGS="-I$(brew --prefix gdbm)/include" >> "$GITHUB_ENV"
         echo GDBM_LIBS="-L$(brew --prefix gdbm)/lib -lgdbm" >> "$GITHUB_ENV"
-        echo TESTPYTHON=python.exe >> "$GITHUB_ENV"
         echo CXX=clang++ >>  "$GITHUB_ENV"
+        echo TESTPYTHON=python.exe >> "$GITHUB_ENV"
 
     - name: apt update on arm64
       if: ${{ matrix.os == 'ubuntu-24.04-arm' }}
