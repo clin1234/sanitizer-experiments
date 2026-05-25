@@ -61,7 +61,10 @@ jobs:
               && sudo dpkg -i gcc-latest.deb
         echo "/opt/gcc-latest/bin" >> $GITHUB_PATH
         echo "LD_RUN_PATH=/opt/gcc-latest/lib64" >> $GITHUB_ENV
-        echo CXX=g++ >> "$GITHUB_ENV"
+
+    - name: Ubuntu-specific setup with GCC
+      if if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'gcc'}}
+      run: echo CXX=g++ >> "$GITHUB_ENV"
 
     - name: Ubuntu-specific setup with LLVM
       if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'clang'}}
@@ -127,11 +130,9 @@ jobs:
         path: 'config.log'
 
     - name: Build then display build info
-      if: success() || failure()
       run: make -j pythoninfo
 
     - name: Tests
-      if: success() || failure()
       run: |
         ./$TESTPYTHON -m test -x test_capi -x test_faulthandler
         ./$TESTPYTHON -m test --tsan-parallel --parallel-threads=6 -j6
