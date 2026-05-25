@@ -138,9 +138,9 @@ jobs:
 
     - name: Tests
       run: |
+        make -j ci
         ./$TESTPYTHON -m test -x test_capi -x test_faulthandler
         ./$TESTPYTHON -m test --tsan-parallel --parallel-threads=6 -j6
-        make -j ci
 
     - name: Display logs
       if: always()
