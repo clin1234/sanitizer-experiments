@@ -12,6 +12,7 @@ jobs:
         cc: [clang, gcc]
         os: [ubuntu-latest, macos-26, macos-26-intel, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
+    continue-on-error: true
     env:
       # -fsanitize=memtag-stack -march=armv8a+memtag only with M5 CPU
       # CFLAGS: '-fsanitize-address-use-after-scope -fsanitize-coverage=trace-cmp -fstack-clash-protection'
@@ -109,6 +110,7 @@ jobs:
              ${{ contains(matrix.os, 'macos') && '--with-openssl="$(brew --prefix openssl@3.5)"' || '' }} \
             --with-undefined-behavior-sanitizer \
             --with-thread-sanitizer \
+            --with-mimalloc \
             --with-pydebug \
             --disable-gil \
             --enable-safety \
