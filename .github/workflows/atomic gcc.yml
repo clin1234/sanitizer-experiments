@@ -1,0 +1,38 @@
+name: Build with GCC 15 on macOS 26
+
+on:
+  push:
+    branches: stdatomic-gcc-macos
+
+jobs:
+  build:
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set CC and CXX to GCC 15
+        run: |
+          echo "$(brew --prefix gcc@15)" >> "$GITHUB_PATH"
+
+      - name: Verify compiler versions
+        run: |
+          echo "Using CC=$CC"
+          echo "Using CXX=$CXX"
+          $CC --version
+          $CXX --version
+
+      - name: Build
+        run: |
+          cat > test.c << EOF
+            #include <stdatomic.h>
+            atomic_int int_var;
+            atomic_uintptr_t uintptr_var;
+            int main() {
+              atomic_store_explicit(&int_var, 5, memory_order_relaxed);
+              atomic_store_explicit(&uintptr_var, 0, memory_order_relaxed);
+              int loaded_value = atomic_load_explicit(&int_var, memory_order_seq_cst);
+              return 0;
+          EOF
+          $CC test.c
