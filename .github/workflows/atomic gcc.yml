@@ -34,4 +34,4 @@ jobs:
               return 0;
             }
           EOF
-          $CC test.c
+          $CC -fsanitize=thread -fsanitize=undefined test.c
