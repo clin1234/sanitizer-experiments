@@ -22,6 +22,8 @@ jobs:
       - name: Verify compiler version
         run: |
           $CC --version
+          env
+          ls -la "$(brew --prefix gcc@15)/lib/gcc/"
 
       - name: Build
         run: |
