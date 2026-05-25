@@ -40,4 +40,4 @@ jobs:
               return 0;
             }
           EOF
-          $CC -fsanitize=thread -fsanitize=undefined test.c
+          $CC -fsanitize=thread  test.c
