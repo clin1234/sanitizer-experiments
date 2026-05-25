@@ -15,6 +15,8 @@ jobs:
       - name: Set CC to GCC 15
         run: |
           echo "$(brew --prefix gcc@15)" >> "$GITHUB_PATH"
+          echo LDFLAGS="-L$(brew --prefix gcc@15)/lib" >> "$GITHUB_ENV"
+          echo CPPFLAGS="-I$(brew --prefix gcc@15)/include" >> "$GITHUB_ENV"
           echo CC=gcc-15 >> "$GITHUB_ENV"
 
       - name: Verify compiler version
