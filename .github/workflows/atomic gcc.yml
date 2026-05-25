@@ -32,5 +32,6 @@ jobs:
               atomic_store_explicit(&uintptr_var, 0, memory_order_relaxed);
               int loaded_value = atomic_load_explicit(&int_var, memory_order_seq_cst);
               return 0;
+            }
           EOF
           $CC test.c
