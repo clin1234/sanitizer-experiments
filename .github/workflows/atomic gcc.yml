@@ -12,8 +12,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ls -R gcc
-        run: ls -R "$(brew --prefix gcc@15)/"
+      - name: ls -Rl gcc
+        run: ls -Rl "$(brew --prefix gcc@15)/"
 
       - name: Set CC to GCC 15
         run: |
