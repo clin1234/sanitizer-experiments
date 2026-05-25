@@ -63,7 +63,7 @@ jobs:
         echo "LD_RUN_PATH=/opt/gcc-latest/lib64" >> $GITHUB_ENV
 
     - name: Ubuntu-specific setup with GCC
-      if if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'gcc'}}
+      if:  ${{ contains(matrix.os, 'ubuntu') && matrix.cc == 'gcc'}}
       run: echo CXX=g++ >> "$GITHUB_ENV"
 
     - name: Ubuntu-specific setup with LLVM
